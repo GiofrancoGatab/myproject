@@ -1,0 +1,46 @@
+{% extends 'todo_list/base.html' %}
+{% block content %}
+  <h1>My To-Do List</h1>
+
+  <!-- Add New Item Form -->
+  <form method="POST">
+    {% csrf_token %}
+    <input type="text" name="item" placeholder="Add new item" required>
+    <button type="submit" class="btn btn-success">Add</button>
+  </form>
+
+  <hr>
+
+  <!-- Show Items -->
+  {% if all_items %}
+    <table class="table table-bordered mt-3">
+      <tr>
+        <th>Task</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+      {% for things in all_items %}
+      <tr>
+        {% if things.completed %}
+          <td><s>{{ things.item }}</s></td>
+          <td>Completed</td>
+          <td>
+            <a href="{% url 'unstrike' things.id %}" class="btn btn-warning btn-sm">Unstrike</a>
+            <a href="{% url 'delete' things.id %}" class="btn btn-danger btn-sm">Delete</a>
+          </td>
+        {% else %}
+          <td>{{ things.item }}</td>
+          <td>Not Completed</td>
+          <td>
+            <a href="{% url 'strike' things.id %}" class="btn btn-success btn-sm">Strike</a>
+            <a href="{% url 'delete' things.id %}" class="btn btn-danger btn-sm">Delete</a>
+          </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>No items yet.</p>
+  {% endif %}
+{% endblock %}
+
